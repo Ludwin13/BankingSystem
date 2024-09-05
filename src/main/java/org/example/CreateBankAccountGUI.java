@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,15 +14,14 @@ public class CreateBankAccountGUI extends JFrame {
     private JComboBox validIDComboBox;
     private JTextField depositAmountField;
     private JPanel createBankAccountPanel;
-    private JTextField firstNameField;
-    private JTextField middleNameField;
     private JTextField lastNameField;
+    private JTextField middleNameField;
+    private JTextField firstNameField;
     private JTextField addressLine1Field;
     private JTextField addressLine2Field;
     private JTextField mobileNumberField;
-    private static int global_latest_tracking_num;
 
-    public CreateBankAccountGUI() {
+    public CreateBankAccountGUI(int admin_id) {
         setContentPane(createBankAccountPanel);
         setTitle("Login");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -40,63 +38,51 @@ public class CreateBankAccountGUI extends JFrame {
 
                 //Create a 12-digit account tracking number
                     // Branch Code - 4 digits
-                    // Customer Identifer - 8 digits
+                    // Customer Identifier - 8 digits
                     // for example:
                         // Branch Code: 1012
                         // Customer ID: 1
                         // Tracking Number: 101200000001
-
-                String retrieve_user_id = "SELECT MAX(account_tracking_number) AS account_tracking_number " +
-                        "FROM bank_account_information;";
-
-                try {
-
-                    Connection conn = DBConnector.getConnection();
-                    PreparedStatement stmt = conn.prepareStatement(retrieve_user_id);
-                    ResultSet rs = stmt.executeQuery();
-
-                    while (rs.next()) {
+                if (mobileNumberField.getText().length() != 11) {
+                    JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Enter valid mobile number starting with '09' ");
+                } else {
+                    try {
                         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-                        int current_tracking_number = rs.getInt("account_tracking_number");
-
-                        System.out.println(current_tracking_number);
+                        Connection conn = DBConnector.getConnection();
 
                         String create_bank_account_query = "INSERT INTO bank_account_information (" +
-                                "account_tracking_number, account_balance, date_created) " +
-                                "VALUES (?, ?, ?)";
-
-                        PreparedStatement stmt2 = conn.prepareStatement(create_bank_account_query);
-                        stmt2.setInt(1, current_tracking_number + 1);
-                        stmt2.setDouble(2, Double.parseDouble(depositAmountField.getText()));
-                        stmt2.setString(3, ft.format(new Date()));
-
-                        String insert_user_information = "INSERT INTO bank_account_holder_information(" +
-                                "account_tracking_number, " +
+                                "account_balance, " +
                                 "account_holder_first_name, " +
                                 "account_holder_middle_name, " +
                                 "account_holder_last_name, " +
-                                "account_holder_mobile_number, " +
+                                "account_holder_mobile_number," +
                                 "account_holder_address, " +
-                                "account_holder_valid_id)" +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?);";
+                                "account_holder_valid_id, " +
+                                "date_created) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
+                        PreparedStatement stmt = conn.prepareStatement(create_bank_account_query);
+                        stmt.setDouble(1, Double.parseDouble(depositAmountField.getText()));
+                        stmt.setString(2, firstNameField.getText());
+                        stmt.setString(3, middleNameField.getText());
+                        stmt.setString(4, lastNameField.getText());
+                        stmt.setString(5, mobileNumberField.getText());
+                        stmt.setString(6, addressLine1Field.getText() + " " + addressLine2Field.getText());
+                        stmt.setString(7, validIDComboBox.getSelectedItem().toString());
+                        stmt.setString(8, ft.format(new Date()));
 
-                        PreparedStatement stmt3 = conn.prepareStatement(insert_user_information);
-                        stmt3.setInt(1, current_tracking_number + 1);
-                        stmt3.setString(2, firstNameField.getText());
-                        stmt3.setString(3, middleNameField.getText());
-                        stmt3.setString(4, lastNameField.getText());
-                        stmt3.setString(5, mobileNumberField.getText());
-                        stmt3.setString(6, addressLine1Field.getText() + " " + addressLine2Field.getText());
-                        stmt3.setString(7, validIDComboBox.getSelectedItem().toString());
-
-                        stmt3.executeUpdate();
+                        stmt.executeUpdate();
 
                         JOptionPane.showMessageDialog(null, "Account Created");
 
+                        conn.close();
+                        AdminGUI adminGUI = new AdminGUI(admin_id);
+                        setVisible(false);
+                        adminGUI.setVisible(true);
+
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, ex);
                     }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, ex + " 1st query");
                 }
             }
         });
@@ -113,9 +99,6 @@ public class CreateBankAccountGUI extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
-        new CreateBankAccountGUI();
-    }
 
     private void fillComboBox() {
         validIDComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] {

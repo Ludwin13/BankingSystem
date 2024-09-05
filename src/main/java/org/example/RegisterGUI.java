@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -47,46 +46,30 @@ public class RegisterGUI extends JFrame {
                 } else {
                     //Add fields to database
                     try {
-
-                        String create_user_account = "INSERT INTO user_account_table (user_name, user_password, date_created) VALUES (?,?,?);";
-                        String retrieve_user_account_info = "SELECT * FROM user_account_table WHERE user_name=? AND user_password=?";
+                        String create_user_account = "INSERT INTO user_account_table (" +
+                                "user_name, " +
+                                "user_first_name, " +
+                                "user_middle_name, " +
+                                "user_last_name, " +
+                                "user_email," +
+                                "user_password, " +
+                                "date_created) " +
+                                "VALUES (?,?,?,?,?,?,?);";
 
                         Connection conn = DBConnector.getConnection();
                         PreparedStatement pst = conn.prepareStatement(create_user_account);
                         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
 
                         pst.setString(1, userNameField.getText().trim());
-                        pst.setString(2, passwordField1.getText().trim());
-                        pst.setString(3, ft.format(new Date()));
+                        pst.setString(2, firstNameField.getText().trim());
+                        pst.setString(3, middleNameField.getText().trim());
+                        pst.setString(4, lastNameField.getText().trim());
+                        pst.setString(5, emailField.getText().trim());
+                        pst.setString(6, passwordField1.getText().trim());
+                        pst.setString(7, ft.format(new Date()));
 
                         //Insert Username, and Password to user_account_table
                         pst.executeUpdate();
-
-                        //Retrieve incremented user_id from user_account_table
-                        PreparedStatement pst2  = conn.prepareStatement(retrieve_user_account_info);
-
-                        pst2.setString(1, userNameField.getText());
-                        pst2.setString(2, passwordField1.getText().trim());
-
-                        ResultSet rs = pst2.executeQuery();
-
-                        while(rs.next()) {
-                            int id = rs.getInt("user_id");
-                            String insert_user_info = "INSERT INTO user_account_info_table (user_id, first_name, middle_name, last_name, user_email) VALUES (?,?,?,?,?);";
-
-                            PreparedStatement pst3 = conn.prepareStatement(insert_user_info);
-                            pst3.setInt(1, id);
-                            pst3.setString(2, firstNameField.getText().trim());
-                            pst3.setString(3, middleNameField.getText().trim());
-                            pst3.setString(4, lastNameField.getText().trim());
-                            pst3.setString(5, emailField.getText().trim());
-
-                            pst3.executeUpdate();
-
-
-
-                        }
-
                         conn.close();
                         JOptionPane.showMessageDialog(null, "Successfully Registered");
 
@@ -94,6 +77,15 @@ public class RegisterGUI extends JFrame {
                         JOptionPane.showMessageDialog(null, ex);
                     }
                 }
+            }
+        });
+
+        goBackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LoginGUI loginGUI = new LoginGUI();
+                setVisible(false);
+                loginGUI.setVisible(true);
             }
         });
     }

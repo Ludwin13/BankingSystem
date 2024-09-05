@@ -7,7 +7,7 @@ public class DBConnector {
     ResultSet rs = null;
     PreparedStatement pst = null;
 
-    public static  Connection getConnection() {
+    public static Connection getConnection() {
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");

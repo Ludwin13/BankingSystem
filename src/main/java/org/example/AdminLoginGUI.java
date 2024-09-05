@@ -30,7 +30,7 @@ public class AdminLoginGUI extends JFrame {
                 String password = String.valueOf(passwordField.getPassword());
                 String loginQuery = "SELECT * " +
                         "FROM admin_table " +
-                        "WHERE admin_username = ? AND admin_password = ?";
+                        "WHERE admin_user_name = ? AND admin_password = ?";
 
                 try {
                     Connection conn = DBConnector.getConnection();
@@ -42,7 +42,7 @@ public class AdminLoginGUI extends JFrame {
 
                     while(rs.next()) {
                         int admin_id = rs.getInt("admin_id");
-                        String user = rs.getString("admin_username");
+                        String user = rs.getString("admin_user_name");
                         String pass = rs.getString("admin_password");
 
                         if(user.equals(userName) && pass.equals(password)) {
@@ -51,15 +51,22 @@ public class AdminLoginGUI extends JFrame {
 
                             setVisible(false);
                             adminGUI.setVisible(true);
-
                         } else {
                             JOptionPane.showMessageDialog(AdminLoginPanel, "Wrong Password");
                         }
                     }
-
                 } catch (Exception ex) {
 
                 }
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LoginGUI loginGUI = new LoginGUI();
+                setVisible(false);
+                loginGUI.setVisible(true);
 
             }
         });

@@ -34,17 +34,9 @@
         <properties/>
         <border type="none" title="QUICK LINKS:"/>
         <children>
-          <component id="11a45" class="javax.swing.JButton" binding="createBankAccountButton">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="CREATE BANK ACCOUNT"/>
-            </properties>
-          </component>
           <component id="fba1f" class="javax.swing.JButton" binding="sendMoneyButton">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="SEND MONEY"/>
@@ -52,7 +44,7 @@
           </component>
           <component id="a0d63" class="javax.swing.JButton" binding="transactionHistoryButton">
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="TRANSACTION HISTORY"/>
@@ -64,6 +56,14 @@
             </constraints>
             <properties>
               <text value="CHANGE PASSWORD"/>
+            </properties>
+          </component>
+          <component id="153c4" class="javax.swing.JButton" binding="bindAccountButton">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="BIND BANK ACCOUNT"/>
             </properties>
           </component>
         </children>

@@ -27,7 +27,7 @@ public class AdminGUI extends JFrame {
         createBankAccountButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CreateBankAccountGUI createBankAccountGUI = new CreateBankAccountGUI();
+                CreateBankAccountGUI createBankAccountGUI = new CreateBankAccountGUI(admin_id);
                 setVisible(false);
                 createBankAccountGUI.setVisible(true);
 
@@ -55,7 +55,6 @@ public class AdminGUI extends JFrame {
                 String fullName = rs.getString("first_name") + " " +
                         rs.getString("middle_name") + " " +
                         rs.getString("last_name");
-
 
                 employeeIDValue.setText(admin_id);
                 employeeNameValue.setText(fullName);
