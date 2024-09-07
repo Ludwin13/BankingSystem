@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 public class AdminGUI extends JFrame {
     private JPanel AdminPanel;
     private JButton createBankAccountButton;
-    private JButton button2;
+    private JButton goBackButton;
     private JLabel employeeIDValue;
     private JLabel employeeNameValue;
 
@@ -18,28 +18,32 @@ public class AdminGUI extends JFrame {
         setContentPane(AdminPanel);
         setTitle("Admin");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(720,800);
+        setSize(720,480);
         setLocationRelativeTo(null);
         setVisible(true);
 
         fillAdminInformation(admin_id);
 
-        createBankAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CreateBankAccountGUI createBankAccountGUI = new CreateBankAccountGUI(admin_id);
-                setVisible(false);
-                createBankAccountGUI.setVisible(true);
+        createBankAccountButton.addActionListener(e -> {
+            CreateBankAccountGUI createBankAccountGUI = new CreateBankAccountGUI(admin_id);
+            setVisible(false);
+            createBankAccountGUI.setVisible(true);
 
-            }
+        });
+
+        goBackButton.addActionListener(e -> {
+            AdminLoginGUI adminLoginGUI = new AdminLoginGUI();
+            setVisible(false);
+            adminLoginGUI.setVisible(true);
         });
     }
 
     private void fillAdminInformation(int id) {
-        String retrieveAdminInfo = "SELECT A_IT.admin_id, A_IT.first_name, A_IT.middle_name, A_IT.last_name" +
-                "FROM admin_info_table AS A_IT" +
-                "JOIN admin_table AS A_T" +
-                "ON A_IT.admin_id = A_T.admin_id" +
+        //Retrieve Admin Info
+        String retrieveAdminInfo = "SELECT A_IT.admin_id, A_IT.first_name, A_IT.middle_name, A_IT.last_name " +
+                "FROM admin_info_table AS A_IT " +
+                "JOIN admin_table AS A_T " +
+                "ON A_IT.admin_id = A_T.admin_id " +
                 "WHERE A_IT.admin_id = ? AND A_T.admin_id = ?;";
 
         try {
@@ -61,7 +65,7 @@ public class AdminGUI extends JFrame {
 
             }
         } catch (Exception ex) {
-
+            JOptionPane.showMessageDialog(null, ex);
         }
 
 

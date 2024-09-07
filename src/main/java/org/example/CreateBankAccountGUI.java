@@ -20,82 +20,90 @@ public class CreateBankAccountGUI extends JFrame {
     private JTextField addressLine1Field;
     private JTextField addressLine2Field;
     private JTextField mobileNumberField;
+    private JButton CLEARFIELDSButton;
 
     public CreateBankAccountGUI(int admin_id) {
         setContentPane(createBankAccountPanel);
-        setTitle("Login");
+        setTitle("CREATE BANK ACCOUNT");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(720,800);
+        setSize(1440,720);
         setLocationRelativeTo(null);
         setVisible(true);
 
         //fill Valid ID Combo Box with list of Valid ID
         fillComboBox();
 
-        createBankAccountButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        createBankAccountButton.addActionListener(e -> {
 
-                //Create a 12-digit account tracking number
-                    // Branch Code - 4 digits
-                    // Customer Identifier - 8 digits
-                    // for example:
-                        // Branch Code: 1012
-                        // Customer ID: 1
-                        // Tracking Number: 101200000001
-                if (mobileNumberField.getText().length() != 11) {
-                    JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Enter valid mobile number starting with '09' ");
-                } else {
-                    try {
-                        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-                        Connection conn = DBConnector.getConnection();
+            //Create a 12-digit account tracking number
+                // Branch Code - 4 digits
+                // Customer Identifier - 8 digits
+                // for example:
+                    // Branch Code: 1012
+                    // Customer ID: 1
+                    // Tracking Number: 101200000001
+            if (mobileNumberField.getText().length() != 11) {
+                JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Enter valid mobile number starting with '09' ");
+            } else if (isEmptyField(firstNameField.getText()) || isEmptyField(middleNameField.getText()) || isEmptyField(lastNameField.getText())) {
+                JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Please enter both first name and last names");
+            } else if (isEmptyField(addressLine1Field.getText()) || isEmptyField(addressLine2Field.getText())) {
+                JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Please enter both address line 1 and address line 2");
+            } else {
+                try {
+                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                    Connection conn = DBConnector.getConnection();
 
-                        String create_bank_account_query = "INSERT INTO bank_account_information (" +
-                                "account_balance, " +
-                                "account_holder_first_name, " +
-                                "account_holder_middle_name, " +
-                                "account_holder_last_name, " +
-                                "account_holder_mobile_number," +
-                                "account_holder_address, " +
-                                "account_holder_valid_id, " +
-                                "date_created) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    String create_bank_account_query = "INSERT INTO bank_account_information (" +
+                            "account_balance, " +
+                            "account_holder_first_name, " +
+                            "account_holder_middle_name, " +
+                            "account_holder_last_name, " +
+                            "account_holder_mobile_number," +
+                            "account_holder_address, " +
+                            "account_holder_valid_id, " +
+                            "date_created) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-                        PreparedStatement stmt = conn.prepareStatement(create_bank_account_query);
-                        stmt.setDouble(1, Double.parseDouble(depositAmountField.getText()));
-                        stmt.setString(2, firstNameField.getText());
-                        stmt.setString(3, middleNameField.getText());
-                        stmt.setString(4, lastNameField.getText());
-                        stmt.setString(5, mobileNumberField.getText());
-                        stmt.setString(6, addressLine1Field.getText() + " " + addressLine2Field.getText());
-                        stmt.setString(7, validIDComboBox.getSelectedItem().toString());
-                        stmt.setString(8, ft.format(new Date()));
+                    PreparedStatement stmt = conn.prepareStatement(create_bank_account_query);
+                    stmt.setDouble(1, Double.parseDouble(depositAmountField.getText()));
+                    stmt.setString(2, firstNameField.getText());
+                    stmt.setString(3, middleNameField.getText());
+                    stmt.setString(4, lastNameField.getText());
+                    stmt.setString(5, mobileNumberField.getText());
+                    stmt.setString(6, addressLine1Field.getText() + " " + addressLine2Field.getText());
+                    stmt.setString(7, validIDComboBox.getSelectedItem().toString());
+                    stmt.setString(8, ft.format(new Date()));
 
-                        stmt.executeUpdate();
+                    stmt.executeUpdate();
 
-                        JOptionPane.showMessageDialog(null, "Account Created");
+                    JOptionPane.showMessageDialog(null, "Account Created");
 
-                        conn.close();
-                        AdminGUI adminGUI = new AdminGUI(admin_id);
-                        setVisible(false);
-                        adminGUI.setVisible(true);
+                    conn.close();
+                    AdminGUI adminGUI = new AdminGUI(admin_id);
+                    setVisible(false);
+                    adminGUI.setVisible(true);
 
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, ex);
-                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex);
                 }
             }
         });
 
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String test = "1020202020202";
-                int lastString = Integer.parseInt(test.substring(3, test.length()));
-                System.out.println(String.valueOf(lastString));
-                System.out.println(String.valueOf(lastString + 1));
+        backButton.addActionListener(e -> {
+            AdminGUI adminGUI = new AdminGUI(admin_id);
+            setVisible(false);
+            adminGUI.setVisible(true);
+        });
 
-            }
+        CLEARFIELDSButton.addActionListener(e -> {
+            depositAmountField.setText("");
+            lastNameField.setText("");
+            middleNameField.setText("");
+            firstNameField.setText("");
+            addressLine1Field.setText("");
+            addressLine2Field.setText("");
+            mobileNumberField.setText("");
+            JButton CLEARFIELDSButton;
         });
     }
 
@@ -126,5 +134,8 @@ public class CreateBankAccountGUI extends JFrame {
         }));
     }
 
+    private boolean isEmptyField(String textField) {
+        return textField.trim().isEmpty();
+    }
 
 }
