@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/AdminLoginGUI.java" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/ChangePasswordGUI.java" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/CreateBankAccountGUI.java" dialect="SQLite" />
+    <file url="file://$PROJECT_DIR$/src/main/java/org/example/DepositMoneyGUI.java" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/LoginGUI.java" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/RegisterGUI.java" dialect="SQLite" />
     <file url="file://$PROJECT_DIR$/src/main/java/org/example/UserHomeGUI.java" dialect="SQLite" />

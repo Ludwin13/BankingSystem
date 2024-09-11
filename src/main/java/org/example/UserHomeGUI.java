@@ -20,6 +20,7 @@ public class UserHomeGUI extends JFrame {
     private JLabel currentBalanceLabel;
     private JButton bindAccountButton;
     private JButton logoutButton;
+    private JButton depositButton;
 
     Connection conn = DBConnector.getConnection();
 
@@ -173,6 +174,35 @@ public class UserHomeGUI extends JFrame {
             LoginGUI loginGUI = new LoginGUI();
             setVisible(false);
             loginGUI.setVisible(true);
+
+        });
+
+        depositButton.addActionListener(e -> {
+            String determine_existing_bank_account_query = "SELECT * " +
+                    "FROM bank_account_information " +
+                    "WHERE user_id = ?";
+
+            try {
+                PreparedStatement pst = conn.prepareStatement(determine_existing_bank_account_query);
+                pst.setInt(1, id);
+
+                ResultSet rs = pst.executeQuery();
+
+                if(!rs.next()) {
+                    JOptionPane.showMessageDialog(null, "No bound account.");
+                } else {
+                    do {
+                        Long current_tracking_number = rs.getLong("account_tracking_number");
+                        DepositMoneyGUI depositMoneyGUI = new DepositMoneyGUI(id, current_tracking_number);
+                        setVisible(false);
+                        depositMoneyGUI.setVisible(true);
+
+                    } while(rs.next());
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
 
         });
     }
