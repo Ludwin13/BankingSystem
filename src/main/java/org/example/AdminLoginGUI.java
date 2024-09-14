@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.dao.AdminDAO;
+import org.example.model.Admin;
+
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +15,8 @@ public class AdminLoginGUI extends JFrame {
     private JButton backButton;
     private JPanel AdminLoginPanel;
 
+    AdminDAO adminDAO = new AdminDAO();
+
     public AdminLoginGUI() {
         setContentPane(AdminLoginPanel);
         setTitle("Admin");
@@ -20,41 +25,11 @@ public class AdminLoginGUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
 
-
         loginButton.addActionListener(e -> {
-            String userName = userNameField.getText();
-            String password = String.valueOf(passwordField.getPassword());
-            String loginQuery = "SELECT * " +
-                    "FROM admin_table " +
-                    "WHERE admin_user_name = ? AND admin_password = ?";
-
-            try {
-                Connection conn = DBConnector.getConnection();
-                assert conn != null;
-                PreparedStatement ps = conn.prepareStatement(loginQuery);
-
-                ps.setString(1, userName);
-                ps.setString(2, password);
-                ResultSet rs = ps.executeQuery();
-
-                while(rs.next()) {
-                    int admin_id = rs.getInt("admin_id");
-                    String user = rs.getString("admin_user_name");
-                    String pass = rs.getString("admin_password");
-
-                    if(user.equals(userName) && pass.equals(password)) {
-                        JOptionPane.showMessageDialog(AdminLoginPanel, "Admin Login Successful");
-                        AdminGUI adminGUI = new AdminGUI(admin_id);
-
-                        setVisible(false);
-                        adminGUI.setVisible(true);
-                    } else {
-                        JOptionPane.showMessageDialog(AdminLoginPanel, "Wrong Password");
-                    }
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, ex);
-            }
+            Admin admin = new Admin(userNameField.getText(), String.valueOf(passwordField.getPassword()));
+            AdminGUI adminGUI = new AdminGUI(adminDAO.loginAdmin(admin));
+            setVisible(false);
+            adminGUI.setVisible(true);
         });
 
         backButton.addActionListener(e -> {

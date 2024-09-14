@@ -1,12 +1,9 @@
 package org.example;
 
+import org.example.dao.AdminDAO;
+import org.example.model.Admin;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class CreateBankAccountGUI extends JFrame {
     private JButton createBankAccountButton;
@@ -22,9 +19,11 @@ public class CreateBankAccountGUI extends JFrame {
     private JTextField mobileNumberField;
     private JButton CLEARFIELDSButton;
 
-    public CreateBankAccountGUI(int admin_id) {
+    AdminDAO adminDAO = new AdminDAO();
+
+    public CreateBankAccountGUI(Admin admin) {
         setContentPane(createBankAccountPanel);
-        setTitle("CREATE BANK ACCOUNT");
+        setTitle("Create Bank Account");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1440,720);
         setLocationRelativeTo(null);
@@ -34,54 +33,23 @@ public class CreateBankAccountGUI extends JFrame {
         fillComboBox();
 
         createBankAccountButton.addActionListener(e -> {
-
-            //Create a 12-digit account tracking number
-                // Branch Code - 4 digits
-                // Customer Identifier - 8 digits
-                // for example:
-                    // Branch Code: 1012
-                    // Customer ID: 1
-                    // Tracking Number: 101200000001
             if (mobileNumberField.getText().length() != 11) {
                 JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Enter valid mobile number starting with '09' ");
             } else if (isEmptyField(firstNameField.getText()) || isEmptyField(middleNameField.getText()) || isEmptyField(lastNameField.getText())) {
                 JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Please enter both first name and last names");
-            } else if (isEmptyField(addressLine1Field.getText()) || isEmptyField(addressLine2Field.getText())) {
+            } else if (isEmptyField(addressLine1Field.getText()) && isEmptyField(addressLine2Field.getText())) {
                 JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Please enter both address line 1 and address line 2");
             } else {
                 try {
-                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-                    Connection conn = DBConnector.getConnection();
-
-                    String create_bank_account_query = "INSERT INTO bank_account_information (" +
-                            "account_balance, " +
-                            "account_holder_first_name, " +
-                            "account_holder_middle_name, " +
-                            "account_holder_last_name, " +
-                            "account_holder_mobile_number," +
-                            "account_holder_address, " +
-                            "account_holder_valid_id, " +
-                            "date_created) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-                    PreparedStatement stmt = conn.prepareStatement(create_bank_account_query);
-                    stmt.setDouble(1, Double.parseDouble(depositAmountField.getText()));
-                    stmt.setString(2, firstNameField.getText());
-                    stmt.setString(3, middleNameField.getText());
-                    stmt.setString(4, lastNameField.getText());
-                    stmt.setString(5, mobileNumberField.getText());
-                    stmt.setString(6, addressLine1Field.getText() + " " + addressLine2Field.getText());
-                    stmt.setString(7, validIDComboBox.getSelectedItem().toString());
-                    stmt.setString(8, ft.format(new Date()));
-
-                    stmt.executeUpdate();
-
-                    JOptionPane.showMessageDialog(null, "Account Created");
-
-                    conn.close();
-                    AdminGUI adminGUI = new AdminGUI(admin_id);
-                    setVisible(false);
-                    adminGUI.setVisible(true);
+                    boolean create_status = adminDAO.createBankAccount(Double.parseDouble(depositAmountField.getText()),
+                            firstNameField.getText(), middleNameField.getText(), lastNameField.getText(),
+                            mobileNumberField.getText(), addressLine1Field.getText(), addressLine2Field.getText(),
+                            validIDComboBox.getSelectedItem().toString());
+                    if(!create_status) {
+                        JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Account creation failed");
+                    } else {
+                        JOptionPane.showMessageDialog(CreateBankAccountGUI.this, "Account created");
+                    }
 
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex);
@@ -90,7 +58,7 @@ public class CreateBankAccountGUI extends JFrame {
         });
 
         backButton.addActionListener(e -> {
-            AdminGUI adminGUI = new AdminGUI(admin_id);
+            AdminGUI adminGUI = new AdminGUI(admin);
             setVisible(false);
             adminGUI.setVisible(true);
         });
@@ -103,7 +71,6 @@ public class CreateBankAccountGUI extends JFrame {
             addressLine1Field.setText("");
             addressLine2Field.setText("");
             mobileNumberField.setText("");
-            JButton CLEARFIELDSButton;
         });
     }
 

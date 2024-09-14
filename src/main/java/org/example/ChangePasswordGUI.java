@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.model.User;
+
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,9 +17,9 @@ public class ChangePasswordGUI extends JFrame {
 
     Connection conn = DBConnector.getConnection();
 
-    public ChangePasswordGUI(int user_id) {
+    public ChangePasswordGUI(User user) {
         setContentPane(changePasswordPanel);
-        setTitle("User Home");
+        setTitle("Change Password");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(720,480);
         setLocationRelativeTo(null);
@@ -31,7 +33,7 @@ public class ChangePasswordGUI extends JFrame {
 
             try {
                 PreparedStatement pst2 = conn.prepareStatement(find_user_password_query);
-                pst2.setInt(1, user_id);
+                pst2.setInt(1, user.getUser_id());
                 ResultSet rs = pst2.executeQuery();
 
                 while(rs.next()) {
@@ -51,7 +53,7 @@ public class ChangePasswordGUI extends JFrame {
                             try {
                                 PreparedStatement pst = conn.prepareStatement(update_password_query);
                                 pst.setString(1, newPasswordField.getText());
-                                pst.setInt(2, user_id);
+                                pst.setInt(2, user.getUser_id());
                                 pst.executeUpdate();
 
                                 JOptionPane.showMessageDialog(changePasswordPanel, "Password Updated Successfully");
@@ -79,7 +81,7 @@ public class ChangePasswordGUI extends JFrame {
         });
 
         goBackButton.addActionListener(e -> {
-            UserHomeGUI userHomeGUI = new UserHomeGUI(user_id);
+            UserHomeGUI userHomeGUI = new UserHomeGUI(user);
             setVisible(false);
             userHomeGUI.setVisible(true);
         });
