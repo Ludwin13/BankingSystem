@@ -1,9 +1,10 @@
 package org.example;
 
-import org.example.dao.AdminDAO;
 import org.example.model.Admin;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class AdminGUI extends JFrame {
@@ -12,6 +13,7 @@ public class AdminGUI extends JFrame {
     private JButton goBackButton;
     private JLabel employeeIDValue;
     private JLabel employeeNameValue;
+    private JButton seeTransactionsButton;
 
     public AdminGUI(Admin admin) {
         setContentPane(AdminPanel);
@@ -37,6 +39,16 @@ public class AdminGUI extends JFrame {
             AdminLoginGUI adminLoginGUI = new AdminLoginGUI();
             setVisible(false);
             adminLoginGUI.setVisible(true);
+        });
+
+
+        seeTransactionsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BankTransactionsGUI bankTransactionsGUI = new BankTransactionsGUI(admin);
+                setVisible(false);
+                bankTransactionsGUI.setVisible(true);
+            }
         });
     }
 
