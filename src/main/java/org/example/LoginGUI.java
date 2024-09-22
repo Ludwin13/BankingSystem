@@ -33,9 +33,15 @@ public class LoginGUI extends JFrame{
                 try {
                     // calls
                     User user = new User(loginUserField.getText().trim(), loginPasswordField.getText().trim());
-                    UserHomeGUI userHomeGUI = new UserHomeGUI(userDAO.loginUser(user));
-                    setVisible(false);
-                    userHomeGUI.setVisible(true);
+                    User loginStatus = userDAO.loginUser(user);
+                    if (loginStatus == null) {
+                        JOptionPane.showMessageDialog(null, "Invalid username or password");
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Successfully logged in");
+                        UserHomeGUI userHomeGUI = new UserHomeGUI(loginStatus);
+                        setVisible(false);
+                        userHomeGUI.setVisible(true);
+                    }
 
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, ex);
@@ -60,4 +66,5 @@ public class LoginGUI extends JFrame{
     public static void main(String[] args) {
         new LoginGUI();
     }
+
 }

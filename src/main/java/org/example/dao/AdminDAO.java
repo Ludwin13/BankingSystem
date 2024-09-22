@@ -28,31 +28,60 @@ public class AdminDAO {
             ps.setString(2, admin.getAdmin_password());
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()) {
-                String user = rs.getString("admin_user_name");
-                String pass = rs.getString("admin_password");
+            if (!rs.next()) {
+                return null;
+            } else {
+                do {
+                    String user = rs.getString("admin_user_name");
+                    String pass = rs.getString("admin_password");
 
-                if(user.equals(admin.getAdmin_user_name()) && pass.equals(admin.getAdmin_password())) {
-                    admin.setAdmin_id(rs.getInt("admin_id"));
-                    admin.setAdmin_user_name(rs.getString("admin_user_name"));
-                    admin.setAdmin_first_name(rs.getString("admin_first_name"));
-                    admin.setAdmin_middle_name(rs.getString("admin_middle_name"));
-                    admin.setAdmin_last_name(rs.getString("admin_last_name"));
-                    admin.setAdmin_password(rs.getString("admin_password"));
-                    admin.setDate_created(rs.getString("date_created"));
+                    if (user.equals(admin.getAdmin_user_name()) && pass.equals(admin.getAdmin_password())) {
+                        admin.setAdmin_id(rs.getInt("admin_id"));
+                        admin.setAdmin_user_name(rs.getString("admin_user_name"));
+                        admin.setAdmin_first_name(rs.getString("admin_first_name"));
+                        admin.setAdmin_middle_name(rs.getString("admin_middle_name"));
+                        admin.setAdmin_last_name(rs.getString("admin_last_name"));
+                        admin.setAdmin_password(rs.getString("admin_password"));
+                        admin.setDate_created(rs.getString("date_created"));
 
-                    JOptionPane.showMessageDialog(null, "Admin Login Successful");
-                    conn.close();
-
-                    return admin;
-                } else {
-                    JOptionPane.showMessageDialog(null, "Wrong Password");
-                }
+//                        JOptionPane.showMessageDialog(null, "Admin Login Successful");
+                        conn.close();
+                        return admin;
+                    } else {
+                        conn.close();
+                        // JOptionPane.showMessageDialog(null, "Wrong Password");
+                        return null;
+                    }
+                } while (rs.next());
             }
+
+
+//            while(rs.next()) {
+//                String user = rs.getString("admin_user_name");
+//                String pass = rs.getString("admin_password");
+//
+//                if(user.equals(admin.getAdmin_user_name()) && pass.equals(admin.getAdmin_password())) {
+//                    admin.setAdmin_id(rs.getInt("admin_id"));
+//                    admin.setAdmin_user_name(rs.getString("admin_user_name"));
+//                    admin.setAdmin_first_name(rs.getString("admin_first_name"));
+//                    admin.setAdmin_middle_name(rs.getString("admin_middle_name"));
+//                    admin.setAdmin_last_name(rs.getString("admin_last_name"));
+//                    admin.setAdmin_password(rs.getString("admin_password"));
+//                    admin.setDate_created(rs.getString("date_created"));
+//
+//                    JOptionPane.showMessageDialog(null, "Admin Login Successful");
+//                    conn.close();
+//
+//                    return admin;
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Wrong Password");
+//                }
+//            }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex);
+            return null;
+//            JOptionPane.showMessageDialog(null, ex);
         }
-        return admin;
+//        return admin;
     }
 
     public boolean createBankAccount(double depositAmount, String firstName, String middleName, String lastName, String mobileNumber,

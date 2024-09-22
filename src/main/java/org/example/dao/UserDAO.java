@@ -59,28 +59,59 @@ public class UserDAO {
             ResultSet rs1 = pst1.executeQuery();
 
             //Retrieve values from columns
-            while(rs1.next()) {
-                int id = rs1.getInt("user_id");
-                String user_name = rs1.getString("user_name");
-                String passwd = rs1.getString("user_password");
+            if(!rs1.next()) {
+//                JOptionPane.showMessageDialog(null, "Incorrect username or password");
+                return null;
+            } else {
+                do {
+                    int id = rs1.getInt("user_id");
+                    String user_name = rs1.getString("user_name");
+                    String passwd = rs1.getString("user_password");
 
-                //Checks login text fields if values are equal to the login query result
-                if(user.getUser_name().equals(user_name) && user.getUser_password().equals(passwd)) {
-                    user.setUser_id(rs1.getInt("user_id"));
-                    user.setUser_password(rs1.getString("user_password"));
-                    user.setUser_email(rs1.getString("user_email"));
-                    user.setUser_first_name(rs1.getString("user_first_name"));
-                    user.setUser_middle_name(rs1.getString("user_middle_name"));
-                    user.setUser_last_name(rs1.getString("user_last_name"));
+                    //Checks login text fields if values are equal to the login query result
+                    if(user.getUser_name().equals(user_name) && user.getUser_password().equals(passwd)) {
+                        user.setUser_id(rs1.getInt("user_id"));
+                        user.setUser_password(rs1.getString("user_password"));
+                        user.setUser_email(rs1.getString("user_email"));
+                        user.setUser_first_name(rs1.getString("user_first_name"));
+                        user.setUser_middle_name(rs1.getString("user_middle_name"));
+                        user.setUser_last_name(rs1.getString("user_last_name"));
 
-                    JOptionPane.showMessageDialog(null, "Successfully logged in");
-                    conn.close();
-                    return user;
-                } else {
-                    JOptionPane.showMessageDialog(null, "Incorrect username or password");
-                    conn.close();
-                }
+                        conn.close();
+                        //Successfully logged in
+                        return user;
+                    } else {
+                        conn.close();
+                        // Incorrect username or password
+                        return null;
+//                        JOptionPane.showMessageDialog(null, "Incorrect username or password");
+
+                    }
+                } while(rs1.next());
             }
+
+//            while(rs1.next()) {
+//                int id = rs1.getInt("user_id");
+//                String user_name = rs1.getString("user_name");
+//                String passwd = rs1.getString("user_password");
+//
+//                //Checks login text fields if values are equal to the login query result
+//                if(user.getUser_name().equals(user_name) && user.getUser_password().equals(passwd)) {
+//                    user.setUser_id(rs1.getInt("user_id"));
+//                    user.setUser_password(rs1.getString("user_password"));
+//                    user.setUser_email(rs1.getString("user_email"));
+//                    user.setUser_first_name(rs1.getString("user_first_name"));
+//                    user.setUser_middle_name(rs1.getString("user_middle_name"));
+//                    user.setUser_last_name(rs1.getString("user_last_name"));
+//
+//                    JOptionPane.showMessageDialog(null, "Successfully logged in");
+//                    conn.close();
+//                    return user;
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "Incorrect username or password");
+//                    conn.close();
+//                }
+//            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         }

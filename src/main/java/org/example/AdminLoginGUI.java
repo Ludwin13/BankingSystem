@@ -26,10 +26,17 @@ public class AdminLoginGUI extends JFrame {
         setVisible(true);
 
         loginButton.addActionListener(e -> {
+
             Admin admin = new Admin(userNameField.getText(), String.valueOf(passwordField.getPassword()));
-            AdminGUI adminGUI = new AdminGUI(adminDAO.loginAdmin(admin));
-            setVisible(false);
-            adminGUI.setVisible(true);
+            Admin loginStatus = adminDAO.loginAdmin(admin);
+            if (loginStatus != null) {
+                AdminGUI adminGUI = new AdminGUI(adminDAO.loginAdmin(admin));
+                setVisible(false);
+                adminGUI.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Login Failed");
+            }
+
         });
 
         backButton.addActionListener(e -> {
@@ -38,5 +45,9 @@ public class AdminLoginGUI extends JFrame {
             loginGUI.setVisible(true);
 
         });
+    }
+
+    public static void main(String[] args) {
+        new AdminLoginGUI();
     }
 }
