@@ -1,4 +1,4 @@
-Jar File and Database inside out/artifacts/BankingSystem_Jar
+Jar File and Database inside out/artifacts/BankingSystem_Jar folder
 
 - Login Panel
   
